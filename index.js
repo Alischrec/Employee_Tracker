@@ -99,7 +99,8 @@ employeesByDepartment = () => {
 
 // Employees by Manager:
 employeesByManager = () => {
-// compare employee id to manager_id .. same manager, here ya go
+    // compare employee id to manager_id .. same manager, here ya go
+    connection.query('')
 
 }
 
@@ -123,12 +124,12 @@ addEmployee = () => {
                 message: "What is your employee's role?",
                 choices: response.map(({
                     id, title
-                }) => ({ 
+                }) => ({
                     name: title,
                     value: id
                 }))
             }
-        ]).then( (answer) => {
+        ]).then((answer) => {
             connection.query(
                 "INSERT INTO employee SET ?",
                 {
@@ -136,13 +137,13 @@ addEmployee = () => {
                     last_name: answer.lastName,
                     role_id: answer.role
                 },
-                 (err) => {
+                (err) => {
                     if (err) throw err;
                     start();
                 }
             );
         });
-        
+
     })
 }
 
@@ -175,11 +176,13 @@ removeEmployee = () => {
 // Update Employee:
 updateEmployee = () => {
     // get employees, inquirer asks what employee they want to update, then prompt qs to change .. then update the employee where id = their choice
+    connection.query('')
 
 }
 
 // Update Employee Manager:
 updateEmployeeManager = () => {
     // get employees where manager_id is null, also get all employees .. inquirer asks which to update, then list what managers you can choose from, MAKE MAGIC HAPPEN!
+    connection.query('')
 
 }
