@@ -83,7 +83,7 @@ start = () => {
 
 // View All Employees
 viewEmployees = () => {
-    connection.query('SELECT * FROM employee', function (err, results) {
+    connection.query('SELECT * FROM employee', (err, results) => {
         if (err) throw err;
         console.table(results);
         start();
@@ -128,7 +128,7 @@ addEmployee = () => {
                     value: id
                 }))
             }
-        ]).then(function (answer) {
+        ]).then( (answer) => {
             connection.query(
                 "INSERT INTO employee SET ?",
                 {
@@ -136,7 +136,7 @@ addEmployee = () => {
                     last_name: answer.lastName,
                     role_id: answer.role
                 },
-                function (err) {
+                 (err) => {
                     if (err) throw err;
                     start();
                 }
@@ -148,7 +148,7 @@ addEmployee = () => {
 
 // Remove Employee:
 removeEmployee = () => {
-    connection.query('SELECT * FROM employee', function (err, results) {
+    connection.query('SELECT * FROM employee', (err, results) => {
         if (err) throw err;
         inquirer.prompt([
             {
