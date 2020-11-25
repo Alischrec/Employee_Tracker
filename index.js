@@ -150,20 +150,25 @@ addEmployee = () => {
 removeEmployee = () => {
     connection.query('SELECT * FROM employee', function (err, results) {
         if (err) throw err;
-
         inquirer.prompt([
             {
                 name: "choice",
+                message: 'Who would you like to remove?',
                 type: "rawlist",
                 choices: function () {
                     let choiceArray = [];
                     for (var i = 0; i < results.length; i++) {
-                        choiceArray.push(results[i].first_name && results[i].last_name);
+                        choiceArray.push(results[i].first_name + ' ' + results[i].last_name);
                     }
                     return choiceArray;
                 },
             }
-        ])
+        ]).then(answers => {
+            let employee = answers.choice.split(' ')
+            connection.query('DELETE FROM employee WHERE first_name = ? AND last_name = ?', employee)
+            console.log('This employee has been removed!')
+            start();
+        })
     })
 }
 
