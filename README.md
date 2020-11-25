@@ -19,17 +19,17 @@ Explore the [Project Page](https://github.com/Alischrec/Employee_Tracker)
 * [Acknowledgements](#acknowledgements)
 
 ## About the Project:
-<!-- The focus of this project was to build a Node CLI that acts as an active note taker app.  -->
+The focus of this project was to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.
 
 <!-- ![Project Gif](gif.gif) -->
 
 ### JavaScript:
-<!-- * [index.js](https://github.com/Alischrec/Employee_Tracker/blob/main/index.js) -->
+* [index.js](https://github.com/Alischrec/Employee_Tracker/tree/main/index.js)
+
 
 ### Assets:
-<!-- * [CSS](https://github.com/Alischrec/Employee_Tracker/tree/main/public/assets/css)
-* [JS](https://github.com/Alischrec/Employee_Tracker/tree/main/public/assets/js)
-* [Database](https://github.com/Alischrec/Employee_Tracker/tree/main/db) -->
+* [Database](https://github.com/Alischrec/Employee_Tracker/tree/main/schema.sql)
+* [Seed](https://github.com/Alischrec/Employee_Tracker/tree/main/seed.sql)
 
 ### Built With:
 * This app is build upon [Node.js](https://nodejs.org/en/), [Inquirer](https://www.npmjs.com/package/inquirer/v/0.2.3), [MySQL](https://www.npmjs.com/package/mysql), [Console.table](https://www.npmjs.com/package/console.table), and the [Heroku](https://dashboard.heroku.com/apps) application.

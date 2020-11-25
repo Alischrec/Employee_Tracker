@@ -41,7 +41,7 @@ start = () => {
             name: 'choice',
             choices: [
                 'View All Employees',
-                'View all Employees by Department',
+                'View All Employees by Department',
                 'View All Employees by Manager',
                 'Add Employee',
                 'Remove Employee',
@@ -93,7 +93,11 @@ viewEmployees = () => {
 // Employees by Department:
 employeesByDepartment = () => {
     // Join employee and department table by department_id and id field
-    connection.query('')
+    connection.query('SELECT r.department_id, employee.first_name, employee.last_name, d.name as department_name FROM employee JOIN role r on employee.role_id = r.id JOIN department d on d.id = r.department_id;', (err, results) => {
+        if(err) throw err;
+        console.table(results);
+        start();
+    })
 
 }
 
@@ -128,8 +132,15 @@ addEmployee = () => {
                     name: title,
                     value: id
                 }))
-            }
+            },
+            // {
+            //     type: 'input',
+            //     name: 'manager',
+            //     message: "Who is this empoloyee's manager?",
+            //     choices: populate choices array from sql statement
+            // }
         ]).then((answer) => {
+            console.log(answer);
             connection.query(
                 "INSERT INTO employee SET ?",
                 {
@@ -153,9 +164,9 @@ removeEmployee = () => {
         if (err) throw err;
         inquirer.prompt([
             {
-                name: "choice",
+                name: 'choice',
                 message: 'Who would you like to remove?',
-                type: "rawlist",
+                type: 'rawlist',
                 choices: function () {
                     let choiceArray = [];
                     for (var i = 0; i < results.length; i++) {
@@ -176,7 +187,11 @@ removeEmployee = () => {
 // Update Employee:
 updateEmployee = () => {
     // get employees, inquirer asks what employee they want to update, then prompt qs to change .. then update the employee where id = their choice
-    connection.query('')
+    connection.query('SELECT * FROM employee', (err, results) => {
+        inquirer.prompt([
+
+        ])
+    })
 
 }
 

@@ -34,4 +34,3 @@ VALUES (
     (
         'Legal Team Lead', 20000, 4
     );
-
