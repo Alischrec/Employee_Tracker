@@ -4,6 +4,7 @@ const consoleTable = require('console.table');
 
 // Create a database connection
 const connection = mysql.createConnection({
+    multipleStatements: true,
     host: 'localhost',
     port: 3306,
     user: 'root',
@@ -45,8 +46,7 @@ start = () => {
                 'View All Employees by Manager',
                 'Add Employee',
                 'Remove Employee',
-                'Update Employee Role',
-                'Update Employee Manager',
+                'Update Employee',
                 'Exit'
             ]
         },
@@ -67,11 +67,8 @@ start = () => {
             case 'Remove Employee':
                 removeEmployee();
                 break;
-            case 'Update Employee Role':
+            case 'Update Employee':
                 updateEmployee();
-                break;
-            case 'Update Employee Manager':
-                updateEmployeeManager();
                 break;
             // Exit
             case 'Exit':
@@ -94,7 +91,7 @@ viewEmployees = () => {
 employeesByDepartment = () => {
     // Join employee and department table by department_id and id field
     connection.query('SELECT r.department_id, employee.first_name, employee.last_name, d.name as department_name FROM employee JOIN role r on employee.role_id = r.id JOIN department d on d.id = r.department_id;', (err, results) => {
-        if(err) throw err;
+        if (err) throw err;
         console.table(results);
         start();
     })
@@ -103,14 +100,18 @@ employeesByDepartment = () => {
 
 // Employees by Manager:
 employeesByManager = () => {
-    // compare employee id to manager_id .. same manager, here ya go
-    connection.query('')
+    connection.query(`select concat(e.first_name, ' ', e.last_name) as Employee, concat(manager.first_name, ' ', manager.last_name) as Manager from employee e join employee manager ON e.manager_id = manager.id;`, (err, results) => {
+        if (err) throw err;
+        console.table(results);
+        start();
+    })
 
 }
 
 // Add New Employee
 addEmployee = () => {
-    connection.query('SELECT * FROM role', (err, response) => {
+    connection.query('SELECT * FROM role; SELECT * FROM employee WHERE manager_id IS NULL', (err, response) => {
+        const [roles, managers] = response;
         inquirer.prompt([
             {
                 type: 'input',
@@ -126,27 +127,32 @@ addEmployee = () => {
                 type: 'list',
                 name: 'role',
                 message: "What is your employee's role?",
-                choices: response.map(({
+                choices: roles.map(({
                     id, title
                 }) => ({
                     name: title,
                     value: id
                 }))
             },
-            // {
-            //     type: 'input',
-            //     name: 'manager',
-            //     message: "Who is this empoloyee's manager?",
-            //     choices: populate choices array from sql statement
-            // }
+            {
+                type: 'list',
+                name: 'manager',
+                message: "Who is this empoloyee's manager?",
+                choices: managers.map(({
+                    id, first_name, last_name
+                }) => ({
+                    name: `${first_name} ${last_name}`,
+                    value: id
+                })).concat(['none'])
+            }
         ]).then((answer) => {
-            console.log(answer);
             connection.query(
                 "INSERT INTO employee SET ?",
                 {
                     first_name: answer.firstName,
                     last_name: answer.lastName,
-                    role_id: answer.role
+                    role_id: answer.role,
+                    manager_id: answer.manager === 'none' ? null : answer.manager
                 },
                 (err) => {
                     if (err) throw err;
@@ -186,18 +192,59 @@ removeEmployee = () => {
 
 // Update Employee:
 updateEmployee = () => {
-    // get employees, inquirer asks what employee they want to update, then prompt qs to change .. then update the employee where id = their choice
-    connection.query('SELECT * FROM employee', (err, results) => {
+    connection.query('SELECT * FROM employee; SELECT * FROM employee WHERE manager_id IS NULL; SELECT * FROM role', (err, results) => {
+        const [employee, managers, roles] = response;
         inquirer.prompt([
-
-        ])
+            {
+                type: 'list',
+                name: 'employee',
+                message: "Which employee would you like to update?",
+                choices: employee.map(({
+                    id, first_name, last_name
+                }) => ({
+                    name: `${first_name} ${last_name}`,
+                    value: id
+                }))
+            },
+            {
+                type: 'input',
+                name: 'firstName',
+                message: "What is your employee's first name?"
+            },
+            {
+                type: 'input',
+                name: 'lastName',
+                message: "What is your employee's last name?"
+            },
+            {
+                type: 'list',
+                name: 'role',
+                message: "What is your employee's role?",
+                choices: roles.map(({
+                    id, title
+                }) => ({
+                    name: title,
+                    value: id
+                }))
+            },
+            {
+                type: 'list',
+                name: 'manager',
+                message: "Who is this empoloyee's manager?",
+                choices: managers.map(({
+                    id, first_name, last_name
+                }) => ({
+                    name: `${first_name} ${last_name}`,
+                    value: id
+                })).concat(['none'])
+            }
+        ]).then(answers => {
+            connection.query(`UPDATE employee SET first_name = ${firstName}, last_name = ${lastName}, role_id = ${role}, manager_id = ${manager} WHERE id = ${answers.employee}`);
+            (err) => {
+                if (err) throw err;
+                start();
+            }
+        })
     })
-
-}
-
-// Update Employee Manager:
-updateEmployeeManager = () => {
-    // get employees where manager_id is null, also get all employees .. inquirer asks which to update, then list what managers you can choose from, MAKE MAGIC HAPPEN!
-    connection.query('')
 
 }
