@@ -160,7 +160,6 @@ addEmployee = () => {
                 }
             );
         });
-
     })
 }
 
@@ -192,8 +191,9 @@ removeEmployee = () => {
 
 // Update Employee:
 updateEmployee = () => {
-    connection.query('SELECT * FROM employee; SELECT * FROM employee WHERE manager_id IS NULL; SELECT * FROM role', (err, results) => {
+    connection.query('SELECT * FROM employee; SELECT * FROM employee WHERE manager_id IS NULL; SELECT * FROM role', (err, response) => {
         const [employee, managers, roles] = response;
+        // console.log(response)
         inquirer.prompt([
             {
                 type: 'list',
@@ -230,21 +230,20 @@ updateEmployee = () => {
             {
                 type: 'list',
                 name: 'manager',
-                message: "Who is this empoloyee's manager?",
+                message: "Who is this employee's manager?",
                 choices: managers.map(({
                     id, first_name, last_name
                 }) => ({
                     name: `${first_name} ${last_name}`,
                     value: id
-                })).concat(['none'])
+                })).concat(['null'])
             }
         ]).then(answers => {
-            connection.query(`UPDATE employee SET first_name = ${firstName}, last_name = ${lastName}, role_id = ${role}, manager_id = ${manager} WHERE id = ${answers.employee}`);
-            (err) => {
-                if (err) throw err;
-                start();
-            }
+            connection.query(`UPDATE employee SET first_name = '${answers.firstName}', last_name = '${answers.lastName}', role_id = ${answers.role}, manager_id = ${answers.manager} WHERE id = ${answers.employee}`,
+                (err) => {
+                    if (err) throw err;
+                    start();
+                });
         })
     })
-
-}
+};

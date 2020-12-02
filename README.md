@@ -21,7 +21,7 @@ Explore the [Project Page](https://github.com/Alischrec/Employee_Tracker)
 ## About the Project:
 The focus of this project was to architect and build a solution for managing a company's employees using node, inquirer, and MySQL.
 
-<!-- ![Project Gif](gif.gif) -->
+![Project Gif](gif.gif)
 
 ### JavaScript:
 * [index.js](https://github.com/Alischrec/Employee_Tracker/tree/main/index.js)
